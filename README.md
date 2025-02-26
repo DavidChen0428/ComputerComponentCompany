@@ -1,6 +1,9 @@
 # ComputerComponentComputer
 ## Introduction
-
+預期目標 :<br>
+1. 程式能執行正常的CRUD
+2. 說明程式架構、前後端分離、MVC、Service、DAO
+3. 說明前後端程式細節(JasperReport、資料庫存取、交易)
 ## Tool
 - Eclipse
 - MySQL
