@@ -5,4 +5,40 @@
 - Eclipse
 - MySQL
 ## Software Architecture
-  
+- src/main/java
+  - com.project.david
+    - entity
+      - Employee.java
+      - Order.java
+      - Product.java
+    - dao
+      - BaseDAO.java
+      - DAOException.java
+      - impl.jpa
+        - EmployeeRepository.java
+        - EmployeeDaoImpl.java
+        - OrderRepository.java
+        - OrderDaoImpl.java
+        - ProductRepository.java
+        - ProductDaoImpl.java
+    - service
+      - EmployeeeService.java
+      - OrderService.java
+      - ProductService.java
+      - ReportService.java
+      - ServiceException.java
+      - impl
+        - EmployeeServiceImpl.java
+        - OrderServiceImpl.java
+        - ProductServiceImpl.java
+        - ReportServiceImpl.java
+    - controller
+      - EmployeeController.java
+      - RegisterLoginController.java
+      - OrderController.java
+      - ProductController.java
+      - ReportController.java
+- src/main/resources
+  - static
+  - template
+  - application.properties
