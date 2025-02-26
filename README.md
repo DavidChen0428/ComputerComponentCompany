@@ -11,36 +11,36 @@
 - src/main/java
   - com.project.david
     - entity
-      - Employee.java
-      - Order.java
-      - Product.java
+      - Employee.java(class)
+      - Order.java(class)
+      - Product.java(class)
     - dao
-      - BaseDAO.java
-      - DAOException.java
+      - BaseDAO.java(interface)
+      - DAOException.java(class)
       - impl.jpa
-        - EmployeeRepository.java
-        - EmployeeDaoImpl.java
-        - OrderRepository.java
-        - OrderDaoImpl.java
-        - ProductRepository.java
-        - ProductDaoImpl.java
+        - EmployeeRepository.java(interface)
+        - EmployeeDaoImpl.java(class)
+        - OrderRepository.java(interface)
+        - OrderDaoImpl.java(class)
+        - ProductRepository.java(interface)
+        - ProductDaoImpl.java(class)
     - service
-      - EmployeeeService.java
-      - OrderService.java
-      - ProductService.java
-      - ReportService.java
-      - ServiceException.java
+      - EmployeeeService.java(interface)
+      - OrderService.java(interface)
+      - ProductService.java(interface)
+      - ReportService.java(interface)
+      - ServiceException.java(class)
       - impl
-        - EmployeeServiceImpl.java
-        - OrderServiceImpl.java
-        - ProductServiceImpl.java
-        - ReportServiceImpl.java
+        - EmployeeServiceImpl.java(class)
+        - OrderServiceImpl.java(class)
+        - ProductServiceImpl.java(class)
+        - ReportServiceImpl.java(class)
     - controller
-      - EmployeeController.java
-      - RegisterLoginController.java
-      - OrderController.java
-      - ProductController.java
-      - ReportController.java
+      - EmployeeController.java(class)
+      - RegisterLoginController.java(class)
+      - OrderController.java(class)
+      - ProductController.java(class)
+      - ReportController.java(class)
 - src/main/resources
   - static
   - template
