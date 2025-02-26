@@ -2,7 +2,7 @@
 ## Introduction
 
 ## Tool
-    - Eclipse
-    - MySQL
+- Eclipse
+- MySQL
 ## Software Architecture
   
