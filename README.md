@@ -11,36 +11,36 @@
 - src/main/java
   - com.project.david
     - entity
-      - Employee.java(class)
-      - Order.java(class)
-      - Product.java(class)
+      - Employee.java (class)
+      - Order.java (class)
+      - Product.java (class)
     - dao
-      - BaseDAO.java(interface)
-      - DAOException.java(class)
+      - BaseDAO.java (interface)
+      - DAOException.java (class)
       - impl.jpa
-        - EmployeeRepository.java(interface)
-        - EmployeeDaoImpl.java(class)
-        - OrderRepository.java(interface)
-        - OrderDaoImpl.java(class)
-        - ProductRepository.java(interface)
-        - ProductDaoImpl.java(class)
+        - EmployeeRepository.java (interface)
+        - EmployeeDaoImpl.java (class)
+        - OrderRepository.java (interface)
+        - OrderDaoImpl.java (class)
+        - ProductRepository.java (interface)
+        - ProductDaoImpl.java (class)
     - service
-      - EmployeeeService.java(interface)
-      - OrderService.java(interface)
-      - ProductService.java(interface)
-      - ReportService.java(interface)
-      - ServiceException.java(class)
+      - EmployeeeService.java (interface)
+      - OrderService.java (interface)
+      - ProductService.java (interface)
+      - ReportService.java (interface)
+      - ServiceException.java (class)
       - impl
-        - EmployeeServiceImpl.java(class)
-        - OrderServiceImpl.java(class)
-        - ProductServiceImpl.java(class)
-        - ReportServiceImpl.java(class)
+        - EmployeeServiceImpl.java (class)
+        - OrderServiceImpl.java (class)
+        - ProductServiceImpl.java (class)
+        - ReportServiceImpl.java (class)
     - controller
-      - EmployeeController.java(class)
-      - RegisterLoginController.java(class)
-      - OrderController.java(class)
-      - ProductController.java(class)
-      - ReportController.java(class)
+      - EmployeeController.java (class)
+      - RegisterLoginController.java (class)
+      - OrderController.java (class)
+      - ProductController.java (class)
+      - ReportController.java (class)
 - src/main/resources
   - static
   - template
