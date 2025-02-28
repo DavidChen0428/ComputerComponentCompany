@@ -2,12 +2,12 @@ package com.project.david.dao;
 
 import java.util.List;
 
-// DAO的範本，通用於每個ORM
+// DAO架構
 /*
- * C -> 創建
- * R -> 查詢(單一、多個、全部)
- * U -> 修改(灌注方式)
- * D -> 刪除(可以key類型不同刪除，不一定要用ID)
+ * 	C -> 創建 create
+ * 	R -> 查詢(單一findOne、多個findSome、全部findAll)
+ * 	U -> 修改(灌注方式)update
+ * 	D -> 刪除(目前使用Id刪除)delete
  */
 public interface BaseDAO<T> {
 	

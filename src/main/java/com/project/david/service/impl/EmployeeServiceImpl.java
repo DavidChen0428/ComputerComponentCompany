@@ -7,6 +7,11 @@ import org.springframework.stereotype.Service;
 
 import com.project.david.dao.DAOException;
 import com.project.david.dao.impl.jpa.EmployeeDaoImpl;
+import com.project.david.dto.employee.EmployeeConverter;
+import com.project.david.dto.employee.EmployeeDeleteDTO;
+import com.project.david.dto.employee.EmployeeLoginDTO;
+import com.project.david.dto.employee.EmployeeRegisterDTO;
+import com.project.david.dto.employee.EmployeeUpdateDTO;
 import com.project.david.entity.Employee;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
@@ -17,7 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	EmployeeDaoImpl employeeDaoImpl;
 
 	@Override
-	public void addEmployee(Employee employee) throws ServiceException {
+	public void addEmployee(EmployeeRegisterDTO employeeRegisterDTO) throws ServiceException {
+		Employee employee=EmployeeConverter.convertToEmployeeByRegisterDTO(employeeRegisterDTO);
 		try {
 			employeeDaoImpl.create(employee);
 		} catch (DAOException e) {
@@ -71,10 +77,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public Employee loginEmployee(String username, String password) throws ServiceException {
+	public Employee loginEmployee(EmployeeLoginDTO employeeLoginDTO) throws ServiceException {
 		try {
-			Employee employee = employeeDaoImpl.findOne(username);
-			if (!password.equals(employee.getPassword())) {
+			Employee employee = employeeDaoImpl.findOne(employeeLoginDTO.getUsername());
+			if (!(employeeLoginDTO.getPassword().equals(employee.getPassword()))) {
 				throw new ServiceException("loginEmployee():密碼錯誤");
 			}
 			return employee;
@@ -93,25 +99,44 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void updateEmployee(Integer id, String name, String password, String position, String department)
+	public void updateEmployee(EmployeeUpdateDTO employeeUpdateDTO)
 			throws ServiceException {
 		try {
-			Employee employee = employeeDaoImpl.findOne(id);
-			employee.setName(name);
-			employee.setPassword(password);
-			employee.setPosition(position);
-			employee.setDepartment(department);
+			Employee employee = employeeDaoImpl.findOne(employeeUpdateDTO.getId());
+			if (isNotNullOrEmpty(employeeUpdateDTO.getName())) {
+				employee.setName(employeeUpdateDTO.getName());
+			}
+			if (isNotNullOrEmpty(employeeUpdateDTO.getPassword())) {
+				employee.setPassword(employeeUpdateDTO.getPassword());
+			}
+			if (isNotNullOrEmpty(employeeUpdateDTO.getPosition())) {
+				employee.setPosition(employeeUpdateDTO.getPosition());
+			}
+			if (isNotNullOrEmpty(employeeUpdateDTO.getDepartment())) {
+				employee.setDepartment(employeeUpdateDTO.getDepartment());
+			}
 			employeeDaoImpl.update(employee);
 		} catch (DAOException e) {
-			throw new ServiceException("updateEmployee():出現數據庫訪問錯誤: " + e.getMessage(), e);
+			throw new ServiceException("updateEmployee():數據庫訪問錯誤: " + e.getMessage(), e);
 		}
-
+	}
+	
+	// 判別EmployeeUpdateDTO物件內的參數裡面是否為空字串或是null
+	private boolean isNotNullOrEmpty(String str) {
+		return str!=null && !str.isEmpty();
 	}
 
+	// 傳入username,password進行資料驗證，再刪除
 	@Override
-	public void deleteEmployee(String username, String password) throws ServiceException {
-		// TODO Auto-generated method stub
-
+	public void deleteEmployee(EmployeeDeleteDTO employeeDeleteDTO) throws ServiceException {
+		try {
+			Employee employee = employeeDaoImpl.findOne(employeeDeleteDTO.getUsername());
+			if (employeeDeleteDTO.getPassword() != employee.getPassword()) {
+				throw new ServiceException("deleteEmployee():刪除密碼錯誤");
+			}
+			employeeDaoImpl.delete(employee.getId());
+		} catch (DAOException e) {
+			throw new ServiceException("deleteEmployee():數據庫訪問錯誤" + e.getMessage(), e);
+		}
 	}
-
 }

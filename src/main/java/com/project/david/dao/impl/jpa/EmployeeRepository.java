@@ -7,6 +7,15 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.project.david.entity.Employee;
 
 public interface EmployeeRepository extends JpaRepository<Employee,Integer>{
+	/*	
+	 * 	create() -> save()
+	 * 	findOne() -> findByName, findByUsername(), findById(), existsByName(), existsByUsername() 
+	 * 	findSome() -> findByPosition(), findByDepartment(), existsByPosition(), existsByDepartment() 
+	 * 	findAll() -> findAll()
+	 * 	update() -> save()
+	 * 	delete() -> deleteById()
+	 */
+	
 	List<Employee> findByName(String name);
 	List<Employee> findByPosition(String position);
 	List<Employee> findByDepartment(String department);

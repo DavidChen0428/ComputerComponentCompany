@@ -1,6 +1,9 @@
 package com.project.david.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,7 +16,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name="product")
+@Table(name="products")
 public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -22,8 +25,9 @@ public class Product {
 	private double price;
 	private int quantity;
 	
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="order_id")
+	@JsonBackReference// 防止遞歸循環，並解決序列化、反序列化問題
 	private Order order;
 
 	public Product(String name, double price, int quantity, Order order) {

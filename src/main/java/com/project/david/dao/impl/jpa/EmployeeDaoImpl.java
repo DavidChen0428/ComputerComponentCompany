@@ -24,7 +24,7 @@ import com.project.david.entity.Employee;
  *  findAll
  *  update
  *  delete
- *  existsByUsername
+ *  existsByUsername(另外定義的方法，用來做新增員工時，檢查員工帳號是否重複)
  */
 @Repository
 public class EmployeeDaoImpl implements BaseDAO<Employee> {
