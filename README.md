@@ -25,6 +25,13 @@
         - OrderDaoImpl.java (class)
         - ProductRepository.java (interface)
         - ProductDaoImpl.java (class)
+    - dto
+      - employee
+        - EmployeeConverter.java (class)
+        - EmployeeRegisterDTO.java (class)
+        - EmployeeLoginDTO.java (class)
+        - EmployeeUpdateDTO.java (calss)
+        - EmployeeDeleteDTO.java (class)
     - service
       - EmployeeeService.java (interface)
       - OrderService.java (interface)
