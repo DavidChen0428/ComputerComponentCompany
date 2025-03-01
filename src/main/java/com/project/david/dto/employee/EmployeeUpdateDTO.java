@@ -1,6 +1,5 @@
 package com.project.david.dto.employee;
 
-import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 

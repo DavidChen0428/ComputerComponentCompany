@@ -8,14 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.david.dto.employee.EmployeeDeleteDTO;
 import com.project.david.dto.employee.EmployeeRegisterDTO;
+import com.project.david.dto.employee.EmployeeUpdateDTO;
 import com.project.david.entity.Employee;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
@@ -34,7 +38,7 @@ import com.project.david.service.ServiceException;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/api/employee")
+@RequestMapping("/employeeAPI")
 public class EmployeeController {
 	@Autowired
 	EmployeeService employeeService;
@@ -43,15 +47,20 @@ public class EmployeeController {
 	public ResponseEntity<Map<String, String>> addEmployee(@RequestBody EmployeeRegisterDTO employeeRegisterDTO) {
 		Map<String, String> response = new HashMap<>();
 		try {
-			employeeService.addEmployee(employeeRegisterDTO);
-			response.put("message", "add employee success");
-			response.put("name", employeeRegisterDTO.getName());
-			response.put("username", employeeRegisterDTO.getUsername());
-			response.put("password", employeeRegisterDTO.getPassword());
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
+			if (!employeeService.checkUsernameBeenUsed(employeeRegisterDTO.getUsername())) {
+				employeeService.addEmployee(employeeRegisterDTO);
+				response.put("message", "add employee success");
+				response.put("name", employeeRegisterDTO.getName());
+				response.put("username", employeeRegisterDTO.getUsername());
+				response.put("password", employeeRegisterDTO.getPassword());
+				return new ResponseEntity<>(response, HttpStatus.CREATED);
+			} else {
+				response.put("message", "add employee failure. username repeat");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
 		} catch (ServiceException e) {
-			response.put("message", "add employee failure. please check whether your profile correct or not.");
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			response.put("message", "Employee addition failed: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -87,7 +96,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("findEmployee/position/{position}")
 	public ResponseEntity<List<Employee>> selectEmployeeByPosition(@PathVariable("position") String position) {
 		try {
@@ -98,7 +107,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@GetMapping("findEmployee/department/{department}")
 	public ResponseEntity<List<Employee>> selectEmployeeByDepartment(@PathVariable("department") String department) {
 		try {
@@ -109,7 +118,30 @@ public class EmployeeController {
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
 
+	@PutMapping("updateEmployee")
+	public ResponseEntity<Map<String, String>> updateEmployee(@RequestBody EmployeeUpdateDTO employeeUpdateDTO) {
+		Map<String, String> response = new HashMap<>();
+		try {
+			employeeService.updateEmployee(employeeUpdateDTO);
+			response.put("message", "Employee updated successfully.");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (ServiceException e) {
+			response.put("message", "Employee update failed: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@DeleteMapping("deleteEmployee")
+	public ResponseEntity<Map<String, String>> deleteEmployee(@RequestBody EmployeeDeleteDTO employeeDeleteDTO) {
+		Map<String, String> response = new HashMap<>();
+		try {
+			employeeService.deleteEmployee(employeeDeleteDTO);
+			response.put("message", "Employee deleted successfully.");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (ServiceException e) {
+			response.put("message", "Employee deleted failed: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

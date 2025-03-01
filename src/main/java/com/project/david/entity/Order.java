@@ -19,6 +19,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+/*
+ * 	訂單管理系統 : 
+ * 		訂單屬性 :
+ * 			訂單編號(id)
+ * 			訂單日期(orderDate)
+ * 			總價(totalAmount)
+ */
+
 @Getter
 @Setter
 @Entity
@@ -50,6 +58,5 @@ public class Order {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
 	
 }

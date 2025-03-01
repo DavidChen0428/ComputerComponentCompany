@@ -15,7 +15,7 @@ import com.project.david.dto.employee.EmployeeUpdateDTO;
 import com.project.david.entity.Employee;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
-
+// 商業邏輯處理
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
