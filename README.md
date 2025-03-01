@@ -46,8 +46,8 @@
     - controller
       - EmployeeController.java (class) O
       - AuthenticationController.java (class) O
-      - OrderController.java (class)
-      - ProductController.java (class)
+      - OrderController.java (class) O
+      - ProductController.java (class) O
       - ReportController.java (class)
 - src/main/resources
   - static
