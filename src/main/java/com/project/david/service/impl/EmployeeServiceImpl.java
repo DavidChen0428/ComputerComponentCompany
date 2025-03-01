@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.project.david.dao.DAOException;
 import com.project.david.dao.impl.jpa.EmployeeDaoImpl;
-import com.project.david.dto.employee.EmployeeConverter;
+import com.project.david.dto.Converter;
 import com.project.david.dto.employee.EmployeeDeleteDTO;
 import com.project.david.dto.employee.EmployeeLoginDTO;
 import com.project.david.dto.employee.EmployeeRegisterDTO;
@@ -23,7 +23,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public void addEmployee(EmployeeRegisterDTO employeeRegisterDTO) throws ServiceException {
-		Employee employee=EmployeeConverter.convertToEmployeeByRegisterDTO(employeeRegisterDTO);
+		Employee employee=Converter.convertToEmployeeByRegisterDTO(employeeRegisterDTO);
 		try {
 			employeeDaoImpl.create(employee);
 		} catch (DAOException e) {

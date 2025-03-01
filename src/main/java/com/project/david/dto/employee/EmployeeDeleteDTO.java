@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EmployeeDeleteDTO {
+	// delete -> 需要 username 和 password 來刪除
 	private String username;
 	private String password;
 	

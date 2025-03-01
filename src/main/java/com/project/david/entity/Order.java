@@ -1,6 +1,7 @@
 package com.project.david.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -45,7 +46,7 @@ public class Order {
 	
 	@OneToMany(mappedBy="order",cascade=CascadeType.ALL)
 	@JsonManagedReference// 防止遞歸循環，並解決序列化、反序列化問題
-	private Set<Product> products;
+	private List<Product> products;
 
 	public Order(LocalDate orderDate, double totalAmount,Employee employee) {
 		super();
