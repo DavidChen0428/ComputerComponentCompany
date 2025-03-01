@@ -12,40 +12,40 @@
 - src/main/java
   - com.project.david
     - entity
-      - Employee.java (class)
-      - Order.java (class)
-      - Product.java (class)
+      - Employee.java (class) O
+      - Order.java (class) O
+      - Product.java (class) O
     - dao
-      - BaseDAO.java (interface)
-      - DAOException.java (class)
+      - BaseDAO.java (interface) O
+      - DAOException.java (class) O
       - impl.jpa
-        - EmployeeRepository.java (interface)
-        - EmployeeDaoImpl.java (class)
-        - OrderRepository.java (interface)
-        - OrderDaoImpl.java (class)
-        - ProductRepository.java (interface)
+        - EmployeeRepository.java (interface) O
+        - EmployeeDaoImpl.java (class) O
+        - OrderRepository.java (interface) O
+        - OrderDaoImpl.java (class) O
+        - ProductRepository.java (interface) O
         - ProductDaoImpl.java (class)
     - dto
       - employee
-        - EmployeeConverter.java (class)
-        - EmployeeRegisterDTO.java (class)
-        - EmployeeLoginDTO.java (class)
-        - EmployeeUpdateDTO.java (calss)
-        - EmployeeDeleteDTO.java (class)
+        - EmployeeConverter.java (class) O
+        - EmployeeRegisterDTO.java (class) O
+        - EmployeeLoginDTO.java (class) O
+        - EmployeeUpdateDTO.java (calss) O
+        - EmployeeDeleteDTO.java (class) O
     - service
-      - EmployeeeService.java (interface)
-      - OrderService.java (interface)
+      - EmployeeeService.java (interface) O
+      - OrderService.java (interface) 
       - ProductService.java (interface)
       - ReportService.java (interface)
-      - ServiceException.java (class)
+      - ServiceException.java (class) O
       - impl
-        - EmployeeServiceImpl.java (class)
+        - EmployeeServiceImpl.java (class) O
         - OrderServiceImpl.java (class)
         - ProductServiceImpl.java (class)
         - ReportServiceImpl.java (class)
     - controller
-      - EmployeeController.java (class)
-      - RegisterLoginController.java (class)
+      - EmployeeController.java (class) O
+      - AuthenticationController.java (class) O
       - OrderController.java (class)
       - ProductController.java (class)
       - ReportController.java (class)
