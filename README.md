@@ -41,7 +41,7 @@
       - impl
         - EmployeeServiceImpl.java (class) O
         - OrderServiceImpl.java (class) O
-        - ProductServiceImpl.java (class)
+        - ProductServiceImpl.java (class) O
         - ReportServiceImpl.java (class)
     - controller
       - EmployeeController.java (class) O
