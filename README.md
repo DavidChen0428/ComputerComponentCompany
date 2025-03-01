@@ -24,7 +24,7 @@
         - OrderRepository.java (interface) O
         - OrderDaoImpl.java (class) O
         - ProductRepository.java (interface) O
-        - ProductDaoImpl.java (class)
+        - ProductDaoImpl.java (class) O
     - dto
       - employee
         - EmployeeConverter.java (class) O
@@ -34,13 +34,13 @@
         - EmployeeDeleteDTO.java (class) O
     - service
       - EmployeeeService.java (interface) O
-      - OrderService.java (interface) 
-      - ProductService.java (interface)
+      - OrderService.java (interface)  O
+      - ProductService.java (interface) O
       - ReportService.java (interface)
       - ServiceException.java (class) O
       - impl
         - EmployeeServiceImpl.java (class) O
-        - OrderServiceImpl.java (class)
+        - OrderServiceImpl.java (class) O
         - ProductServiceImpl.java (class)
         - ReportServiceImpl.java (class)
     - controller
