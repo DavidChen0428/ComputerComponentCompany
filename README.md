@@ -32,19 +32,19 @@
       - OrderDTO.java (class) O
       - ProductDTO.java (class) O
     - service
-      - EmployeeeService.java (interface)
+      - EmployeeeService.java (interface) O
       - OrderService.java (interface) O
       - ProductService.java (interface)
       - ReportService.java (interface)
       - ServiceException.java (class)
       - impl
-        - EmployeeServiceImpl.java (class)
+        - EmployeeServiceImpl.java (class) O
         - OrderServiceImpl.java (class) O
         - ProductServiceImpl.java (class)
         - ReportServiceImpl.java (class)
     - controller
-      - EmployeeController.java (class)
-      - AuthenticationController.java (class)
+      - EmployeeController.java (class) O
+      - AuthenticationController.java (class) O
       - OrderController.java (class) O
       - ProductController.java (class)
       - ReportController.java (class)
