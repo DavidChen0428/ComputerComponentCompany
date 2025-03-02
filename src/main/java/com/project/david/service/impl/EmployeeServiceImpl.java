@@ -24,6 +24,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public EmployeeDTO addEmployee(EmployeeDTO employeeDTO) throws ServiceException {
 		try {
+			if (checkUsernameBeenUsed(employeeDTO.getUsername())) {
+				throw new ServiceException("addEmployee(): 用戶名存在，請使用其他用戶名。");
+			}
 			Employee employee = Converter.convertToEmployeeByEmployeeDTO(employeeDTO);
 
 			employeeDaoImpl.create(employee);
@@ -33,7 +36,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		}
 	}
 
-	// 獲取所有員工資訊(僅限chairman使用)
+	// 獲取所有員工資訊
 	@Override
 	public List<EmployeeDTO> selectAllEmployee() throws ServiceException {
 		try {
@@ -98,7 +101,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			}
 			return Converter.convertToEmployeeDTO(employee);
 		} catch (DAOException e) {
-			throw new ServiceException("loginEmployee():帳號錯誤" + e.getMessage(), e);
+			throw new ServiceException("loginEmployee():登入失敗" + e.getMessage(), e);
 		}
 	}
 
@@ -108,31 +111,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 		try {
 			return employeeDaoImpl.existsByUsername(username);
 		} catch (DAOException e) {
-			throw new ServiceException("checkUsernameBeenUsed():檢查用戶名出錯:" + e.getMessage(), e);
+			throw new ServiceException("checkUsernameBeenUsed():檢查用戶名失敗:" + e.getMessage(), e);
 		}
 	}
 
 	// 更新員工資料
 	@Override
-	public EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeUpdateDTO) throws ServiceException {
+	public EmployeeDTO updateEmployee(Integer id, EmployeeDTO employeeDTO) throws ServiceException {
 		try {
 			Employee employee = employeeDaoImpl.findOne(id);
-			if (isNotNullOrEmpty(employeeUpdateDTO.getName())) {
-				employee.setName(employeeUpdateDTO.getName());
+			if (isNotNullOrEmpty(employeeDTO.getName())) {
+				employee.setName(employeeDTO.getName());
 			}
-			if (isNotNullOrEmpty(employeeUpdateDTO.getPassword())) {
-				employee.setPassword(employeeUpdateDTO.getPassword());
+			if (isNotNullOrEmpty(employeeDTO.getPassword())) {
+				employee.setPassword(employeeDTO.getPassword());
 			}
-			if (isNotNullOrEmpty(employeeUpdateDTO.getPosition())) {
-				employee.setPosition(employeeUpdateDTO.getPosition());
+			if (isNotNullOrEmpty(employeeDTO.getPosition())) {
+				employee.setPosition(employeeDTO.getPosition());
 			}
-			if (isNotNullOrEmpty(employeeUpdateDTO.getDepartment())) {
-				employee.setDepartment(employeeUpdateDTO.getDepartment());
+			if (isNotNullOrEmpty(employeeDTO.getDepartment())) {
+				employee.setDepartment(employeeDTO.getDepartment());
 			}
 			employeeDaoImpl.update(employee);
 			return Converter.convertToEmployeeDTO(employee);
 		} catch (DAOException e) {
-			throw new ServiceException("updateEmployee():數據庫訪問錯誤: " + e.getMessage(), e);
+			throw new ServiceException("updateEmployee():更新員工資料失敗: " + e.getMessage(), e);
 		}
 	}
 

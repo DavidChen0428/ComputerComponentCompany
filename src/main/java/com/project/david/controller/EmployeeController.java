@@ -42,12 +42,21 @@ public class EmployeeController {
 	@Autowired
 	private EmployeeService employeeService;
 
-	// 註冊新員工(新增)
-	// 檢查用戶名是否存在
+	// 1.新增員工(僅限chairman)
+	// 檢查用戶名
 	// EmployeeDTO 傳送資訊，調用Service的 addEmployee() 註冊員工
 	@PostMapping("/addEmployee")
-	public ResponseEntity<?> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+	public ResponseEntity<?> addEmployee(@RequestBody EmployeeDTO employeeDTO,HttpSession session) {
 		Map<String, String> response = new HashMap<>();
+		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
+		if (currentEmployee == null) {
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to add employee.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		}
 		try {
 			boolean isUsernameUsed = employeeService.checkUsernameBeenUsed(employeeDTO.getUsername());
 			if (isUsernameUsed) {
@@ -64,7 +73,7 @@ public class EmployeeController {
 		}
 	}
 
-	// 查詢所有員工(僅限chairman)
+	// 2.查詢所有員工(僅限chairman)
 	@GetMapping("/allEmployee")
 	public ResponseEntity<?> allEmployee(HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -88,7 +97,9 @@ public class EmployeeController {
 		}
 	}
 
-	// 員工可以查看自己的資料，或是職位是chairman可以查看任意員工的資料
+	// 3.根據Id查詢員工
+	// 員工只可以查看自己的資料
+	// chairman可以查看任意員工的資料
 	@GetMapping("/findEmployee/id={id}")
 	public ResponseEntity<?> selectEmployeeById(@PathVariable("id") Integer id, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -98,7 +109,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			response.put("message", "You don't have permission to look allEmployees Info.");
+			response.put("message", "You don't have permission to look Employees Info.");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
@@ -111,14 +122,19 @@ public class EmployeeController {
 		}
 	}
 
-	// chairman可以查看由 name 搜尋的員工資料
+	// 4.查看由 name 搜尋的員工資料(chairman)
 	@GetMapping("findEmployee/name={name}")
 	public ResponseEntity<?> selectEmployeeByName(@PathVariable("name") String name, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
-		if (currentEmployee == null || !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+		if (currentEmployee == null) {
 			response.put("message", "please login first.");
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		
+		if(!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look Employees Info.");
+	        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
@@ -130,7 +146,7 @@ public class EmployeeController {
 		}
 	}
 
-	// chairman可以查看由 position 搜尋的員工資料
+	// 5.查看由 position 搜尋的員工資料(chairman)
 	@GetMapping("/findEmployee/position={position}")
 	public ResponseEntity<?> selectEmployeeByPosition(@PathVariable("position") String position, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -140,7 +156,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			response.put("message", "You don't have permission to look Employees Info.");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
@@ -153,7 +169,7 @@ public class EmployeeController {
 		}
 	}
 
-	// chairman可以查看由 department 搜尋的員工資料
+	// 6.chairman可以查看由 department 搜尋的員工資料(chairman)
 	@GetMapping("/findEmployee/department={department}")
 	public ResponseEntity<?> selectEmployeeByDepartment(@PathVariable("department") String department,
 			HttpSession session) {
@@ -164,7 +180,7 @@ public class EmployeeController {
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			response.put("message", "You don't have permission to look Employees Info.");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
@@ -177,8 +193,7 @@ public class EmployeeController {
 		}
 	}
 
-	// 員工只能修改自己的資料
-	// chairman可以修改任意員工的資料
+	// 7.修改員工資料(員工只能修改自己的資料)
 	@PutMapping("/updateEmployee/{id}")
 	public ResponseEntity<?> updateEmployee(@PathVariable("id") Integer id, @RequestBody EmployeeDTO employeeDTO,
 			HttpSession session) {
@@ -188,8 +203,9 @@ public class EmployeeController {
 			response.put("message", "please login first.");
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+		// 只允許本人修改自己的資料
+		if (!currentEmployee.getId().equals(id)) {
+			response.put("message", "You don't have permission to look updateEmployee.");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
@@ -203,7 +219,7 @@ public class EmployeeController {
 		}
 	}
 
-	// 刪除員工資料(僅限於chairman)
+	// 8.刪除員工資料(chairman)
 	@DeleteMapping("/deleteEmployee/{id}")
 	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Integer id, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -212,9 +228,16 @@ public class EmployeeController {
 			response.put("message", "please login first.");
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+		// 只允許 chairman 刪除員工
+		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to delete employee.");
 			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+		}
+		
+		// 不允許chairman刪除自己
+		if(currentEmployee.getId().equals(id)) {
+			response.put("message", "You can't delete account yourself.");
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		}
 
 		try {

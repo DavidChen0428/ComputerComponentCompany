@@ -3,7 +3,6 @@ package com.project.david.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.david.dto.Converter;
 import com.project.david.dto.EmployeeDTO;
 import com.project.david.dto.OrderDTO;
-import com.project.david.entity.Order;
 import com.project.david.service.OrderService;
 import com.project.david.service.ServiceException;
 
@@ -55,7 +52,7 @@ public class OrderController {
 		}
 	}
 
-	// 2. 獲取所有訂單(僅 chairman 可用)
+	// 2. 獲取所有訂單
 	@GetMapping("/allOrder")
 	public ResponseEntity<?> selectAllOrder(HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -64,15 +61,10 @@ public class OrderController {
 			response.put("message", "please login first");
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		if (!"chairman".equalsIgnoreCase(employeeDTO.getPosition())) {
-			response.put("message", "you don't have permission to look all orders.");
-			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-		}
-
+		
 		try {
-			List<Order> orders = orderService.selectAllOrder();
-			List<OrderDTO> orderDTOs = orders.stream().map(Converter::convertToOrderDTO).collect(Collectors.toList());
-			return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
+			List<OrderDTO> orders = orderService.selectAllOrder();
+			return new ResponseEntity<>(orders, HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -81,7 +73,7 @@ public class OrderController {
 	}
 
 	// 3.獲取當前登入員工的所有訂單
-	@GetMapping("/findOrder/employee")
+	@GetMapping("/findOrder/myOrder")
 	public ResponseEntity<?> getOrdersForEmployee(HttpSession session) {
 		Map<String, String> response = new HashMap<>();
 		EmployeeDTO employeeDTO = (EmployeeDTO) session.getAttribute("Emp");
@@ -98,7 +90,7 @@ public class OrderController {
 		}
 	}
 
-	// 4.根據訂單Id獲取訂單詳情(如果是自己的訂單，或者是 chairman，則可以查看。)
+	// 4.根據訂單Id獲取訂單詳情
 	@GetMapping("/findOrder/orderId={orderId}")
 	public ResponseEntity<?> selectOrderById(@PathVariable("orderId") Integer orderId, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -108,16 +100,7 @@ public class OrderController {
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 		try {
-			Order order = orderService.selectOrderById(orderId);
-
-			// 權限驗證
-			if (!order.getEmployee().getId().equals(employeeDTO.getId())
-					&& !"chairman".equalsIgnoreCase(employeeDTO.getPosition())) {
-				response.put(null, "You dont't have permission to look this order.");
-				return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-			}
-
-			OrderDTO orderDTO = Converter.convertToOrderDTO(order);
+			OrderDTO orderDTO = orderService.selectOrderById(orderId);
 			return new ResponseEntity<>(orderDTO, HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.put("message", e.getMessage());
@@ -126,7 +109,7 @@ public class OrderController {
 
 	}
 
-	// 5. 更新訂單(只能更新自己的訂單，或 chairman 可以更新任何訂單。)
+	// 5. 更新訂單(只能更新自己的訂單)
 	@PutMapping("/updateOrder/orderId={orderId}")
 	public ResponseEntity<?> updateOrder(@PathVariable("orderId") Integer orderId, @RequestBody OrderDTO orderDTO,
 			HttpSession session) {
@@ -147,7 +130,7 @@ public class OrderController {
 		}
 	}
 
-	// 6. 刪除訂單(只能删除自己的訂單，或 chairman 可以删除任何訂單。)
+	// 6. 刪除訂單(只能删除自己的訂單。)
 	@DeleteMapping("/deleteOrder/orderId={orderId}")
 	public ResponseEntity<?> deleteOrder(@PathVariable("orderId") Integer orderId, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -167,7 +150,7 @@ public class OrderController {
 		}
 	}
 
-	// 7.根據日期查詢訂單(僅限 chairman 使用)
+	// 7.根據日期查詢訂單
 	@GetMapping("/findOrder/date={date}")
 	public ResponseEntity<?> selectOrderByDate(@PathVariable("date") String date, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -176,15 +159,10 @@ public class OrderController {
 			response.put("message", "please login first");
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
-		if (!"chairman".equalsIgnoreCase(employeeDTO.getPosition())) {
-			response.put(null, "You dont't have permission to look this order.");
-			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-		}
-
+		
 		try {
-			List<Order> orders = orderService.selectOrderByDate(date);
-			List<OrderDTO> orderDTOs = orders.stream().map(Converter::convertToOrderDTO).collect(Collectors.toList());
-			return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
+			List<OrderDTO> orders = orderService.selectOrderByDate(date);
+			return new ResponseEntity<>(orders, HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -202,15 +180,9 @@ public class OrderController {
 			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 
-		if (!"chairman".equalsIgnoreCase(employeeDTO.getPosition())) {
-			response.put(null, "You dont't have permission to look this order.");
-			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
-		}
-
 		try {
-			List<Order> orders = orderService.selectOrderByDateBetween(startDate, endDate);
-			List<OrderDTO> orderDTOs = orders.stream().map(Converter::convertToOrderDTO).collect(Collectors.toList());
-			return new ResponseEntity<>(orderDTOs, HttpStatus.OK);
+			List<OrderDTO> orders = orderService.selectOrderByDateBetween(startDate, endDate);
+			return new ResponseEntity<>(orders, HttpStatus.OK);
 		} catch (ServiceException e) {
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

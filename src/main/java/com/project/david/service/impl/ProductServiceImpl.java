@@ -10,9 +10,7 @@ import com.project.david.dao.DAOException;
 import com.project.david.dao.impl.jpa.OrderDaoImpl;
 import com.project.david.dao.impl.jpa.ProductDaoImpl;
 import com.project.david.dto.Converter;
-import com.project.david.dto.EmployeeDTO;
 import com.project.david.dto.ProductDTO;
-import com.project.david.entity.Employee;
 import com.project.david.entity.Order;
 import com.project.david.entity.Product;
 import com.project.david.service.ProductService;
@@ -32,7 +30,11 @@ public class ProductServiceImpl implements ProductService {
 	// 添加新產品
 	@Transactional
 	@Override
-	public ProductDTO addProduct(ProductDTO productDTO, Integer orderId) throws ServiceException {
+	public ProductDTO addProduct(ProductDTO productDTO, Integer orderId,Integer employeeId) throws ServiceException {
+		if(!isOrderOwnedByEmployee(orderId,employeeId)) {
+			throw new ServiceException("您沒有權限在他人訂單下添加產品。");
+		}
+		
 		try {
 			// 驗證orderId 是否存在
 			Order order = orderDaoImpl.findOne(orderId);
@@ -115,9 +117,14 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
+	// 修改產品
 	@Transactional
 	@Override
-	public ProductDTO updateProduct(Integer productId, ProductDTO productDTO) throws ServiceException {
+	public ProductDTO updateProduct(Integer productId, ProductDTO productDTO,Integer employeeId) throws ServiceException {
+		if (!isProductOwnedByEmployee(productId, employeeId)) {
+            throw new ServiceException("您沒有權限在他人訂單下修改產品。");
+		}
+	
 		try {
 			// 根據 productId 獲取 Product 物件
 			Product product = productDaoImpl.findOne(productId);
@@ -159,7 +166,11 @@ public class ProductServiceImpl implements ProductService {
 
 	@Transactional
 	@Override
-	public void deleteProduct(Integer productId) throws ServiceException {
+	public void deleteProduct(Integer productId,Integer employeeId) throws ServiceException {
+		if (!isProductOwnedByEmployee(productId, employeeId)) {
+            throw new ServiceException("您沒有權限刪除他人訂單下的產品");
+        }
+		
 		try {
 			// 根據 productId 找到 Product 物件
 			Product product = productDaoImpl.findOne(productId);
@@ -185,86 +196,29 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public boolean canModifyOrder(EmployeeDTO employeeDTO, Integer orderId) throws ServiceException {
+	public boolean isOrderOwnedByEmployee(Integer orderId, Integer employeeId) throws ServiceException {
 		try {
-			// 根据 orderId 获取订单
 			Order order = orderDaoImpl.findOne(orderId);
 			if (order == null) {
-				throw new ServiceException("canModifyOrder(): doesn't exist");
+				throw new ServiceException("isOrderOwnedByEmployee(): Order doesn't exist.");
 			}
-
-			// 獲得訂單的創建者
-			Employee orderOwner = order.getEmployee();
-
-			// 檢查當前員工是否為訂單創建者或是職位為"chairman"
-			return orderOwner.getId().equals(employeeDTO.getId())
-					|| "chairman".equalsIgnoreCase(employeeDTO.getPosition());
+			return order.getEmployee().getId().equals(employeeId);
 		} catch (DAOException e) {
-			throw new ServiceException("canModifyOrder(): modify fail" + e.getMessage(), e);
+			throw new ServiceException("檢查訂單歸屬失敗: " + e.getMessage(), e);
 		}
 	}
 
 	@Override
-	public boolean canViewProduct(EmployeeDTO employeeDTO, ProductDTO productDTO) throws ServiceException {
-		try {
-			// 根據 ProductDTO 找到 Order 物件，並確認關聯訂單存不存在
-			Order order = orderDaoImpl.findOne(productDTO.getOrderId());
-			if (order == null) {
-				throw new ServiceException("canViewProduct(): Order doesn't exist.");
-			}
-
-			// 獲取訂單的創建者(員工)
-			Employee orderOwner = order.getEmployee();
-
-			// 檢查當前的員工是否為訂單創建者，或是該員工的職位為"chairman"
-			boolean isOrderOwner = orderOwner.getId().equals(employeeDTO.getId());
-			boolean isChairman = "chairman".equalsIgnoreCase(employeeDTO.getPosition());
-
-			// 回傳檢查結果
-			return isOrderOwner || isChairman;
-
-		} catch (DAOException e) {
-			throw new ServiceException("canViewProduct(): validate fail: " + e.getMessage(), e);
-		}
-	}
-
-	@Override
-	public boolean canModifyProduct(EmployeeDTO employee, Integer productId) throws ServiceException {
+	public boolean isProductOwnedByEmployee(Integer productId, Integer employeeId) throws ServiceException {
 		try {
 			Product product = productDaoImpl.findOne(productId);
 			if (product == null) {
-				throw new ServiceException("canModifyProduct(): product doesn't exist.");
+				throw new ServiceException("isProductOwnedByEmployee(): 產品不存在");
 			}
-			Order order = product.getOrder();
-			return order.getEmployee().getId().equals(employee.getId())
-					|| "chairman".equalsIgnoreCase(employee.getPosition());
+			return product.getOrder().getEmployee().getId().equals(employeeId);
 		} catch (DAOException e) {
-			throw new ServiceException("canModifyProduct(): validate fail: " + e.getMessage(), e);
+			throw new ServiceException("檢查產品歸屬失敗：" + e.getMessage(), e);
+
 		}
 	}
-
-	@Override
-	public boolean canViewOrderProduct(EmployeeDTO employee, Integer orderId) throws ServiceException {
-		return canModifyOrder(employee,orderId);
-	}
-
-	@Override
-	public List<ProductDTO> getProductsByNameAndEmployee(String name, EmployeeDTO employee) throws ServiceException {
-		try {
-	        List<Product> products = productDaoImpl.findSome(name);
-	        return products.stream()
-	                .filter(product -> {
-	                    try {
-	                        return canViewProduct(employee, Converter.convertToProductDTO(product));
-	                    } catch (ServiceException e) {
-	                        return false;
-	                    }
-	                })
-	                .map(Converter::convertToProductDTO)
-	                .collect(Collectors.toList());
-	    } catch (DAOException e) {
-	        throw new ServiceException("getProductByNameAndEmployee(): select fail: " + e.getMessage(), e);
-	    }
-	}
-
 }

@@ -2,13 +2,12 @@ package com.project.david.service;
 
 import java.util.List;
 
-import com.project.david.dto.EmployeeDTO;
 import com.project.david.dto.ProductDTO;
 
 public interface ProductService {
 	// create 
 	// 新增新產品
-	ProductDTO addProduct(ProductDTO productDTO, Integer orderId) throws ServiceException;
+	ProductDTO addProduct(ProductDTO productDTO, Integer orderId,Integer employeeId) throws ServiceException;
 	
 	// read 
 	// 根據產品Id獲取產品訊息
@@ -22,22 +21,16 @@ public interface ProductService {
 	
 	// update 
 	// 更新產品資訊
-	ProductDTO updateProduct(Integer productId, ProductDTO productDTO) throws ServiceException;
+	ProductDTO updateProduct(Integer productId, ProductDTO productDTO,Integer employeeId) throws ServiceException;
 	
 	// delete
 	// 刪除產品
-	void deleteProduct(Integer productId) throws ServiceException;
+	void deleteProduct(Integer productId,Integer employeeId) throws ServiceException;
 	
 	// 判別式
-	// 檢查員工是否有權限修改訂單
-	public boolean canModifyOrder(EmployeeDTO employeeDTO, Integer orderId) throws ServiceException;
-	// 檢查員工是否有權限查看產品
-	public boolean canViewProduct(EmployeeDTO employeeDTO,ProductDTO productDTO) throws ServiceException;
-	// 檢查員工是否有權秀修改或刪除指定的產品
-	public boolean canModifyProduct(EmployeeDTO employee,Integer productId) throws ServiceException;
-	// 檢查員工是否有權查看指定訂單的產品列表
-	public boolean canViewOrderProduct(EmployeeDTO employee, Integer orderId) throws ServiceException;
-	// 檢查員工權限，返回匹配的產品列表
-	public List<ProductDTO> getProductsByNameAndEmployee(String name, EmployeeDTO employee) throws ServiceException;
+	// 檢查訂單是否屬於員工
+	boolean isOrderOwnedByEmployee(Integer orderId, Integer employeeId) throws ServiceException;
+	// 檢查產品是否屬於員工的訂單
+	boolean isProductOwnedByEmployee(Integer productId, Integer employeeId) throws ServiceException;
 	
 }
