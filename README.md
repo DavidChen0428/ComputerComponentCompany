@@ -26,28 +26,27 @@
         - ProductRepository.java (interface) O
         - ProductDaoImpl.java (class) O
     - dto
-      - employee
-        - EmployeeConverter.java (class) O
-        - EmployeeRegisterDTO.java (class) O
-        - EmployeeLoginDTO.java (class) O
-        - EmployeeUpdateDTO.java (calss) O
-        - EmployeeDeleteDTO.java (class) O
+      - Converter.java (class) O
+      - EmployeeDTO.java (class) O
+      - LoginRequest.java (class) O
+      - OrderDTO.java (class) O
+      - ProductDTO.java (class) O
     - service
-      - EmployeeeService.java (interface) O
-      - OrderService.java (interface)  O
-      - ProductService.java (interface) O
+      - EmployeeeService.java (interface)
+      - OrderService.java (interface) O
+      - ProductService.java (interface)
       - ReportService.java (interface)
-      - ServiceException.java (class) O
+      - ServiceException.java (class)
       - impl
-        - EmployeeServiceImpl.java (class) O
+        - EmployeeServiceImpl.java (class)
         - OrderServiceImpl.java (class) O
-        - ProductServiceImpl.java (class) O
+        - ProductServiceImpl.java (class)
         - ReportServiceImpl.java (class)
     - controller
-      - EmployeeController.java (class) O
-      - AuthenticationController.java (class) O
+      - EmployeeController.java (class)
+      - AuthenticationController.java (class)
       - OrderController.java (class) O
-      - ProductController.java (class) O
+      - ProductController.java (class)
       - ReportController.java (class)
 - src/main/resources
   - static
