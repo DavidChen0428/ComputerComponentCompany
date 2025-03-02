@@ -1,5 +1,8 @@
 package com.project.david.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.david.dto.employee.EmployeeLoginDTO;
-import com.project.david.entity.Employee;
+import com.project.david.dto.employee.EmployeeDTO;
+import com.project.david.dto.employee.LoginRequest;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
 
@@ -22,15 +25,18 @@ public class AuthenticationController {
 	EmployeeService employeeService;
 	
 	@PostMapping("/loginEmployee")
-	public ResponseEntity<String> loginEmployee(@RequestBody EmployeeLoginDTO employeeLoginDTO,
+	public ResponseEntity<Map<String,String>> loginEmployee(@RequestBody LoginRequest loginRequest,
 								HttpSession session) {
-		Employee employee;
+		Map<String,String> response=new HashMap<>();
 		try {
-			employee = employeeService.loginEmployee(employeeLoginDTO);
-			session.setAttribute("Emp", employee);
-			return ResponseEntity.ok("login success. Welcome! "+employee.getName());
+			EmployeeDTO loggedInEmployee = employeeService.loginEmployee(loginRequest.getUsername(),loginRequest.getPassword());
+			session.setAttribute("Emp", loggedInEmployee);
+			response.put("message", "Login successfully.");
+			response.put("name", loggedInEmployee.getName());
+			return new ResponseEntity<>(response,HttpStatus.OK);
 		} catch (ServiceException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("login failure. please try again to login.");
+			response.put("error", "Login failed: "+e.getMessage());
+			return new ResponseEntity<>(response,HttpStatus.UNAUTHORIZED);
 		}
 	}
 }

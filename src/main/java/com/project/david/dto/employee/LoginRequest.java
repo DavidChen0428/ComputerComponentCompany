@@ -5,20 +5,22 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmployeeDeleteDTO {
-	// delete -> 需要 username 和 password 來刪除
+public class LoginRequest {
+	// Login -> 只需要 username 和 password
+	
 	private String username;
 	private String password;
-	
-	public EmployeeDeleteDTO(String username, String password) {
+
+	public LoginRequest(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
 	}
-	
-	public EmployeeDeleteDTO() {
+
+	public LoginRequest() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
+	
 	
 }

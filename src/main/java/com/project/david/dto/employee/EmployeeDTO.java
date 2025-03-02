@@ -5,27 +5,27 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class EmployeeRegisterDTO {
-	// Register -> 不需要 id 的 Employee
+public class EmployeeDTO {
+
+	private Integer id;
 	private String name;
 	private String username;
-	private String password;
+	private String password; // 註冊或更新的時候使用
 	private String position;
 	private String department;
-	
-	public EmployeeRegisterDTO(String name, String username, String password, String position, String department) {
+
+	public EmployeeDTO(Integer id, String name, String password, String position, String department) {
 		super();
+		this.id = id;
 		this.name = name;
-		this.username = username;
 		this.password = password;
 		this.position = position;
 		this.department = department;
 	}
 
-	public EmployeeRegisterDTO() {
+	public EmployeeDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-	
-	
+
 }

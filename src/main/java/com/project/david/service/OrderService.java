@@ -7,7 +7,7 @@ import com.project.david.entity.Order;
 
 public interface OrderService {
 	// create
-	void addOrder(OrderDTO orderDTO) throws ServiceException;
+	OrderDTO addOrder(OrderDTO orderDTO,Integer employeeId) throws ServiceException;
 	
 	// read
 	List<Order> selectAllOrder() throws ServiceException;

@@ -2,7 +2,6 @@ package com.project.david.entity;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -44,7 +43,7 @@ public class Order {
 	@JsonBackReference// 防止遞歸循環，並解決序列化、反序列化問題
 	private Employee employee;
 	
-	@OneToMany(mappedBy="order",cascade=CascadeType.ALL)
+	@OneToMany(mappedBy="order",cascade=CascadeType.ALL,orphanRemoval=true)
 	@JsonManagedReference// 防止遞歸循環，並解決序列化、反序列化問題
 	private List<Product> products;
 
@@ -60,4 +59,24 @@ public class Order {
 		// TODO Auto-generated constructor stub
 	}
 	
+	// 為了設定totalAmount會隨著Product的新增刪除變動
+	public void addProduct(Product product) {
+		products.add(product);
+		product.setOrder(this);
+		recalculateTotalAmount();
+	}
+	
+	public void removeProduct(Product product) {
+		products.remove(product);
+		product.setOrder(null);
+		recalculateTotalAmount();
+	}
+	
+	public void recalculateTotalAmount() {
+		double sum=0.0;
+		for(Product product:products) {
+			sum+=product.getPrice()*product.getQuantity();
+		}
+		this.totalAmount=sum;
+	}
 }

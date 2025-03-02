@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.project.david.entity.Employee;
+import com.project.david.dto.employee.EmployeeDTO;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
 
@@ -25,8 +25,8 @@ public class EmployeeServiceImplTest {
 		//System.out.println("add employee success");
 		
 		// 2.
-		List<Employee> employees=employeeService.selectAllEmployee();
-		for(Employee employee:employees) {
+		List<EmployeeDTO> employees=employeeService.selectAllEmployee();
+		for(EmployeeDTO employee:employees) {
 			System.out.printf("%d) %s, %s, %s\n",employee.getId(),employee.getName(),employee.getDepartment(),employee.getPosition());
 		}
 		

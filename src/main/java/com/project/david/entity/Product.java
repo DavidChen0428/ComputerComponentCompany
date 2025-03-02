@@ -52,5 +52,4 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
 }

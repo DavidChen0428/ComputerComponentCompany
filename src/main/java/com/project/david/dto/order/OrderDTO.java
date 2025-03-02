@@ -3,6 +3,8 @@ package com.project.david.dto.order;
 import java.time.LocalDate;
 import java.util.List;
 
+import com.project.david.dto.product.ProductDTO;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +16,7 @@ public class OrderDTO {
 	private LocalDate orderDate;
 	private double totalAmount;
 	private Integer employeeId;
-	private List<OrderProductDTO> products;
+	private List<ProductDTO> products;
 	
 	
 	public OrderDTO() {
@@ -23,7 +25,7 @@ public class OrderDTO {
 	}
 
 
-	public OrderDTO(Integer id, LocalDate orderDate, double totalAmount, Integer employeeId, List<OrderProductDTO> products) {
+	public OrderDTO(Integer id, LocalDate orderDate, double totalAmount, Integer employeeId, List<ProductDTO> products) {
 		super();
 		this.id = id;
 		this.orderDate = orderDate;

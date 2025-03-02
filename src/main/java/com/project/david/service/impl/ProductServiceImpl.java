@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.project.david.dao.DAOException;
 import com.project.david.dao.impl.jpa.ProductDaoImpl;
 import com.project.david.dto.Converter;
-import com.project.david.dto.DTOException;
+import com.project.david.dto.ConvertException;
 import com.project.david.dto.product.ProductDTO;
 import com.project.david.entity.Order;
 import com.project.david.entity.Product;
@@ -27,7 +27,7 @@ public class ProductServiceImpl implements ProductService {
 			productDaoImpl.create(product);
 		} catch (DAOException e) {
 			throw new ServiceException("addProduct(): 資料庫訪問層錯誤: " + e.getMessage(), e);
-		} catch (DTOException e) {
+		} catch (ConvertException e) {
 			throw new ServiceException("addProduct(): 資料型態轉換錯誤: " + e.getMessage(), e);
 		}
 	}
@@ -82,7 +82,10 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public void deleteProductById(Integer id) throws ServiceException {
-		// TODO Auto-generated method stub
-
+		try {
+			productDaoImpl.delete(id);
+		}catch(DAOException e) {
+			throw new ServiceException("deleteProduuctById(): 資料庫訪問層錯誤" + e.getMessage(), e);
+		}
 	}
 }

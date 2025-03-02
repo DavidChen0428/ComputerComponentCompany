@@ -2,11 +2,7 @@ package com.project.david.service;
 
 import java.util.List;
 
-import com.project.david.dto.employee.EmployeeDeleteDTO;
-import com.project.david.dto.employee.EmployeeLoginDTO;
-import com.project.david.dto.employee.EmployeeRegisterDTO;
-import com.project.david.dto.employee.EmployeeUpdateDTO;
-import com.project.david.entity.Employee;
+import com.project.david.dto.employee.EmployeeDTO;
 
 /*
  * 公司員工管理功能 :(權限人資或主管)
@@ -28,24 +24,24 @@ import com.project.david.entity.Employee;
  */
 public interface EmployeeService {
 	// create
-	void addEmployee(EmployeeRegisterDTO employeeRegisterDTO) throws ServiceException;
+	EmployeeDTO addEmployee(EmployeeDTO employeeDTO) throws ServiceException;
 	
 	// read
-	List<Employee> selectAllEmployee() throws ServiceException;
-	Employee selectEmployeeById(Integer id) throws ServiceException;
-	Employee selectEmployeeByName(String name) throws ServiceException;
-	List<Employee> selectEmployeeByPosition(String position) throws ServiceException;
-	List<Employee> selectEmployeeByDepartment(String department) throws ServiceException;
+	List<EmployeeDTO> selectAllEmployee() throws ServiceException;
+	EmployeeDTO selectEmployeeById(Integer id) throws ServiceException;
+	EmployeeDTO selectEmployeeByName(String name) throws ServiceException;
+	List<EmployeeDTO> selectEmployeeByPosition(String position) throws ServiceException;
+	List<EmployeeDTO> selectEmployeeByDepartment(String department) throws ServiceException;
 	
 	// login
-	Employee loginEmployee(EmployeeLoginDTO employeeLoginDTO) throws ServiceException;
+	EmployeeDTO loginEmployee(String username, String password) throws ServiceException;
 	boolean checkUsernameBeenUsed(String username) throws ServiceException;
 	
 	// update
-	void updateEmployee(EmployeeUpdateDTO employeeUpdateDTO) throws ServiceException;
+	EmployeeDTO updateEmployee(Integer id,EmployeeDTO employeeDTO) throws ServiceException;
 	
 	// delete
-	void deleteEmployee(EmployeeDeleteDTO employeeDeleteDTO) throws ServiceException;
+	void deleteEmployeeById(Integer id) throws ServiceException;
 	
 	
 }

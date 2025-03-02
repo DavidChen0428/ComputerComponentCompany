@@ -12,16 +12,16 @@ import java.util.List;
 public interface BaseDAO<T> {
 	
 	// create
-	void create(T data) throws DAOException;
+	void create(T data) throws DAOException; 
 	
 	// read
-	T findOne(Object key) throws DAOException;
-	List<T> findAll() throws DAOException;
-	List<T> findSome(Object key) throws DAOException;
+	T findOne(Object key) throws DAOException; 
+	List<T> findAll() throws DAOException; 
+	List<T> findSome(Object key) throws DAOException; 
 	
 	// update
-	void update(T data) throws DAOException;
+	void update(T data) throws DAOException; 
 	
 	// delete
-	void delete(Object key) throws DAOException;
+	void delete(Object key) throws DAOException; 
 }
