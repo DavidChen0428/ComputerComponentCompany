@@ -39,12 +39,11 @@ public class Product {
 	@JsonBackReference// 防止遞歸循環，並解決序列化、反序列化問題
 	private Order order;
 
-	public Product(String name, double price, int quantity, Order order) {
+	public Product(String name, double price, int quantity) {
 		super();
 		this.name = name;
 		this.price = price;
 		this.quantity = quantity;
-		this.order = order;
 	}
 
 	public Product() {

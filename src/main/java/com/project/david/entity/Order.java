@@ -1,6 +1,7 @@
 package com.project.david.entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -47,11 +48,12 @@ public class Order {
 	@JsonManagedReference// 防止遞歸循環，並解決序列化、反序列化問題
 	private List<Product> products;
 
-	public Order(LocalDate orderDate, double totalAmount,Employee employee) {
+	public Order(Employee employee) {
 		super();
-		this.orderDate = orderDate;
-		this.totalAmount = totalAmount;
+		this.orderDate = LocalDate.now();// 設置新增 Order 物件時的當前日期
 		this.employee=employee;
+		this.products=new ArrayList<>();
+		this.totalAmount = 0.0;
 	}
 
 	public Order() {
@@ -60,23 +62,22 @@ public class Order {
 	}
 	
 	// 為了設定totalAmount會隨著Product的新增刪除變動
+	// 添加產品並重新計算總金額
 	public void addProduct(Product product) {
 		products.add(product);
 		product.setOrder(this);
 		recalculateTotalAmount();
 	}
 	
+	// 移除產品並重新計算總金額
 	public void removeProduct(Product product) {
 		products.remove(product);
 		product.setOrder(null);
 		recalculateTotalAmount();
 	}
 	
+	// 重新計算totalAmount
 	public void recalculateTotalAmount() {
-		double sum=0.0;
-		for(Product product:products) {
-			sum+=product.getPrice()*product.getQuantity();
-		}
-		this.totalAmount=sum;
+		this.totalAmount=products.stream().mapToDouble(p -> p.getPrice()*p.getQuantity()).sum();
 	}
 }

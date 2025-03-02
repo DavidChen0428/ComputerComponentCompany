@@ -1,4 +1,4 @@
-package com.project.david.dto.product;
+package com.project.david.dto;
 
 import lombok.Getter;
 import lombok.Setter;

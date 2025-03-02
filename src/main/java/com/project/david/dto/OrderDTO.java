@@ -1,9 +1,7 @@
-package com.project.david.dto.order;
+package com.project.david.dto;
 
 import java.time.LocalDate;
 import java.util.List;
-
-import com.project.david.dto.product.ProductDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,12 +16,10 @@ public class OrderDTO {
 	private Integer employeeId;
 	private List<ProductDTO> products;
 	
-	
 	public OrderDTO() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
 
 	public OrderDTO(Integer id, LocalDate orderDate, double totalAmount, Integer employeeId, List<ProductDTO> products) {
 		super();

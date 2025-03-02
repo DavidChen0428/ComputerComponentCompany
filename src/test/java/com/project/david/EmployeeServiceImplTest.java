@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.project.david.dto.employee.EmployeeDTO;
+import com.project.david.dto.EmployeeDTO;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
 

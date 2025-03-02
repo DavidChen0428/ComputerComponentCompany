@@ -2,7 +2,7 @@ package com.project.david.service;
 
 import java.util.List;
 
-import com.project.david.dto.employee.EmployeeDTO;
+import com.project.david.dto.EmployeeDTO;
 
 /*
  * 公司員工管理功能 :(權限人資或主管)

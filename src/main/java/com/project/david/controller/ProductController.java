@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.david.dto.product.ProductDTO;
+import com.project.david.dto.ProductDTO;
 import com.project.david.entity.Product;
 import com.project.david.service.OrderService;
 import com.project.david.service.ProductService;

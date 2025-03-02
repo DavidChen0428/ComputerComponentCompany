@@ -20,4 +20,6 @@ public interface OrderRepository extends JpaRepository<Order,Integer>{
 	List<Order> findByOrderDate(LocalDate orderDate);
 	List<Order> findByOrderDateBetween(LocalDate startDate,LocalDate endDate);
 	boolean existsByOrderDate(LocalDate orderDate);
+	List<Order> findByEmployeeId(Integer employeeId);
+	boolean existsByEmployeeId(Integer employeeId);
 }

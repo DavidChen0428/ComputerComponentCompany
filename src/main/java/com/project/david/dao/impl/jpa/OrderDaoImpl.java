@@ -72,7 +72,7 @@ public class OrderDaoImpl implements BaseDAO<Order> {
 	public List<Order> findSome(Object key) throws DAOException {
 		if (key instanceof LocalDate orderDate) {
 			try {
-				if(orderRepository.existsByOrderDate(orderDate)) {
+				if (orderRepository.existsByOrderDate(orderDate)) {
 					return orderRepository.findByOrderDate(orderDate);
 				}
 				throw new DAOException("findSome():沒有符合日期內的訂單" + orderDate.toString());
@@ -82,31 +82,44 @@ public class OrderDaoImpl implements BaseDAO<Order> {
 				throw new DAOException("findSome(): 未知錯誤: " + e.getMessage(), e);
 			}
 		}
+		if (key instanceof Integer keyInt) {
+			try {
+				if (orderRepository.existsByEmployeeId(keyInt)) {
+					return orderRepository.findByEmployeeId(keyInt);
+				}
+				throw new DAOException("findSome():沒有符合員工編號的訂單" + keyInt.toString());
+			} catch (DataAccessException e) {
+				throw new DAOException("findSome(): 數據訪問失敗: " + e.getMessage(), e);
+			} catch (Exception e) {
+				throw new DAOException("findSome(): 未知錯誤: " + e.getMessage(), e);
+			}
+		}
 		throw new DAOException("findSome(): 無效的 key 參數類型: " + key.getClass().getName());
 	}
-	
+
 	// 找日期區間的資料
-	public List<Order> findSome(Object key1,Object key2)throws DAOException{
+	public List<Order> findSome(Object key1, Object key2) throws DAOException {
 		if (key1 instanceof LocalDate startDate && key2 instanceof LocalDate endDate) {
-            if(startDate.isAfter(endDate)) {
-            	throw new DAOException("findSome(): 起始日期不能晚於結束日期: " + startDate.toString() + " 到 " + endDate.toString());
-            }
+			if (startDate.isAfter(endDate)) {
+				throw new DAOException(
+						"findSome(): 起始日期不能晚於結束日期: " + startDate.toString() + " 到 " + endDate.toString());
+			}
 			try {
-            	List<Order> orders=orderRepository.findByOrderDateBetween(startDate, endDate);
-            	if(orders.isEmpty()) {
-            		throw new DAOException("findSome(): 沒有符合日期區間內的訂單: " + startDate.toString() + " 到 " + endDate.toString());
-            	}
-                return orderRepository.findByOrderDateBetween(startDate, endDate);
-            } catch (DataAccessException e) {
-                throw new DAOException("findSome(): 數據訪問失敗: " + e.getMessage(), e);
-            } catch (Exception e) {
-                throw new DAOException("findSome(): 未知錯誤: " + e.getMessage(), e);
-            }
-        }
-        throw new DAOException("findSome(): 無效的 key 參數類型: " + key1.getClass().getName()+"/"+key2.getClass().getName());
-    }
-	
-	
+				List<Order> orders = orderRepository.findByOrderDateBetween(startDate, endDate);
+				if (orders.isEmpty()) {
+					throw new DAOException(
+							"findSome(): 沒有符合日期區間內的訂單: " + startDate.toString() + " 到 " + endDate.toString());
+				}
+				return orderRepository.findByOrderDateBetween(startDate, endDate);
+			} catch (DataAccessException e) {
+				throw new DAOException("findSome(): 數據訪問失敗: " + e.getMessage(), e);
+			} catch (Exception e) {
+				throw new DAOException("findSome(): 未知錯誤: " + e.getMessage(), e);
+			}
+		}
+		throw new DAOException(
+				"findSome(): 無效的 key 參數類型: " + key1.getClass().getName() + "/" + key2.getClass().getName());
+	}
 
 	@Override
 	public void update(Order data) throws DAOException {
@@ -134,9 +147,12 @@ public class OrderDaoImpl implements BaseDAO<Order> {
 		try {
 			if (key instanceof Integer) {
 				orderRepository.deleteById((Integer) key);
+			} else if (key instanceof Order) {
+				orderRepository.delete((Order) key);
 			} else {
 				throw new DAOException("delete():無效的key參數類型: " + key.getClass().getName());
 			}
+
 		} catch (EmptyResultDataAccessException e) {
 			throw new DAOException("delete():刪除失敗，沒有找到對應的記錄: " + key.toString(), e);
 		} catch (DataAccessException e) {

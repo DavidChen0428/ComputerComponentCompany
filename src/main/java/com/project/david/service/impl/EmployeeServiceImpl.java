@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import com.project.david.dao.DAOException;
 import com.project.david.dao.impl.jpa.EmployeeDaoImpl;
 import com.project.david.dto.Converter;
-import com.project.david.dto.employee.EmployeeDTO;
+import com.project.david.dto.EmployeeDTO;
 import com.project.david.entity.Employee;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;

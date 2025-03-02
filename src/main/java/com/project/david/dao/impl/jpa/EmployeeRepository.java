@@ -24,4 +24,5 @@ public interface EmployeeRepository extends JpaRepository<Employee,Integer>{
 	boolean existsByDepartment(String department);
 	boolean existsByName(String name);
 	boolean existsByUsername(String username);
+	
 }

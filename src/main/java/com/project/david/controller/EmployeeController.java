@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.david.dto.employee.EmployeeDTO;
+import com.project.david.dto.EmployeeDTO;
 import com.project.david.service.EmployeeService;
 import com.project.david.service.ServiceException;
 
