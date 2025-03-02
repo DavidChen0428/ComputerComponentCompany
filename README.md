@@ -1,13 +1,20 @@
 # ComputerComponentComputer
 ## Introduction
+模擬公司管理系統，除了員工人員管理，還有訂單管理。<br>
+
+
 預期目標 :<br>
 1. 程式能執行正常的CRUD
 2. 說明程式架構、前後端分離、MVC、Service、DAO
 3. 說明前後端程式細節(JasperReport、資料庫存取、交易)
-4. 加選 : 日誌、log4j、JWT
+4. 加選 : ...
 ## Tool
 - Eclipse
 - MySQL
+- Jaspersoft Studio
+- Visual Studio Code
+## Pom.xml
+- 
 ## Software Architecture
 - src/main/java
   - com.project.david
