@@ -34,13 +34,13 @@
     - service
       - EmployeeeService.java (interface) O
       - OrderService.java (interface) O
-      - ProductService.java (interface)
+      - ProductService.java (interface) O
       - ReportService.java (interface)
-      - ServiceException.java (class)
+      - ServiceException.java (class) O
       - impl
         - EmployeeServiceImpl.java (class) O
         - OrderServiceImpl.java (class) O
-        - ProductServiceImpl.java (class)
+        - ProductServiceImpl.java (class) O
         - ReportServiceImpl.java (class)
     - controller
       - EmployeeController.java (class) O
