@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,7 +23,6 @@ import com.project.david.dto.Converter;
 import com.project.david.dto.EmployeeDTO;
 import com.project.david.dto.OrderDTO;
 import com.project.david.entity.Order;
-import com.project.david.service.EmployeeService;
 import com.project.david.service.OrderService;
 import com.project.david.service.ServiceException;
 
@@ -32,14 +32,8 @@ import jakarta.servlet.http.HttpSession;
 @CrossOrigin
 @RequestMapping("/order")
 public class OrderController {
-	private final OrderService orderService;
-	private final EmployeeService employeeService;
-
-	public OrderController(OrderService orderService, EmployeeService employeeService) {
-		super();
-		this.orderService = orderService;
-		this.employeeService = employeeService;
-	}
+	@Autowired
+	private OrderService orderService;
 
 	// 1. 創建新訂單
 	@PostMapping("/addOrder")
@@ -86,7 +80,7 @@ public class OrderController {
 
 	}
 
-	// 3.獲取當前員工的所有訂單
+	// 3.獲取當前登入員工的所有訂單
 	@GetMapping("/findOrder/employee")
 	public ResponseEntity<?> getOrdersForEmployee(HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -104,7 +98,7 @@ public class OrderController {
 		}
 	}
 
-	// 4.根據訂單Id獲取訂單詳情
+	// 4.根據訂單Id獲取訂單詳情(如果是自己的訂單，或者是 chairman，則可以查看。)
 	@GetMapping("/findOrder/orderId={orderId}")
 	public ResponseEntity<?> selectOrderById(@PathVariable("orderId") Integer orderId, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -132,7 +126,7 @@ public class OrderController {
 
 	}
 
-	// 5. 更新訂單
+	// 5. 更新訂單(只能更新自己的訂單，或 chairman 可以更新任何訂單。)
 	@PutMapping("/updateOrder/orderId={orderId}")
 	public ResponseEntity<?> updateOrder(@PathVariable("orderId") Integer orderId, @RequestBody OrderDTO orderDTO,
 			HttpSession session) {
@@ -153,7 +147,7 @@ public class OrderController {
 		}
 	}
 
-	// 6. 刪除訂單
+	// 6. 刪除訂單(只能删除自己的訂單，或 chairman 可以删除任何訂單。)
 	@DeleteMapping("/deleteOrder/orderId={orderId}")
 	public ResponseEntity<?> deleteOrder(@PathVariable("orderId") Integer orderId, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -173,7 +167,7 @@ public class OrderController {
 		}
 	}
 
-	// 7.根據日期查詢訂單
+	// 7.根據日期查詢訂單(僅限 chairman 使用)
 	@GetMapping("/findOrder/date={date}")
 	public ResponseEntity<?> selectOrderByDate(@PathVariable("date") String date, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
@@ -197,7 +191,7 @@ public class OrderController {
 		}
 	}
 
-	// 8. 根據日期範圍查詢訂單
+	// 8. 根據日期範圍查詢訂單(僅限 chairman 使用)
 	@GetMapping("/findOrder/dateBetween")
 	public ResponseEntity<?> getOrdersByDateRange(@RequestParam String startDate, @RequestParam String endDate,
 			HttpSession session) {

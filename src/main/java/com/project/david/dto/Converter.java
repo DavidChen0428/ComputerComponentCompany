@@ -15,9 +15,9 @@ public class Converter {
 
 	// Employee -> EmployeeRegisterDTO
 	// 不包含密碼的訊息
-	public static EmployeeDTO convertToEmployeeDTO(Employee employee) {
+	public static EmployeeDTO convertToEmployeeDTO(Employee employee){
 		if (employee == null) {
-			return null;
+			throw new ConvertException("Employee 物件為 null ,無法轉換為 EmployeeDTO");
 		}
 		EmployeeDTO dto = new EmployeeDTO();
 		dto.setId(employee.getId());
@@ -31,7 +31,7 @@ public class Converter {
 	// EmployeeDTO -> Employee
 	public static Employee convertToEmployeeByEmployeeDTO(EmployeeDTO employeeDTO) {
 		if (employeeDTO == null) {
-			return null;
+			throw new ConvertException("EmployeeDTO 物件為 null ,無法轉換為 Employee");
 		}
 		Employee employee = new Employee();
 		employee.setId(employeeDTO.getId());
@@ -51,7 +51,7 @@ public class Converter {
 	// 避免傳入 Employee 物件，傳遞 employeeId
 	public static OrderDTO convertToOrderDTO(Order order) {
 		if (order == null) {
-			return null;
+			throw new ConvertException("Order 物件為 null ,無法轉換為 OrderDTO");
 		}
 		List<ProductDTO> products = order.getProducts().stream().map(Converter::convertToProductDTO)
 				.collect(Collectors.toList());
@@ -68,7 +68,7 @@ public class Converter {
 	// 避免循環依賴 -> 不獲取完整 Order 和 Employee 物件，只設置Id
 	public static Order convertToOrder(OrderDTO orderDTO) {
 		if (orderDTO == null) {
-			return null;
+			throw new ConvertException("OrderDTO 物件為 null ,無法轉換為 Order");
 		}
 		Order order = new Order();
 		order.setId(orderDTO.getId());
@@ -105,7 +105,7 @@ public class Converter {
 	// 避免傳入 Order 物件，只傳遞 orderId
 	public static ProductDTO convertToProductDTO(Product product) {
 		if (product == null) {
-			return null;
+			throw new ConvertException("Product 物件為 null ,無法轉換為 ProductDTO");
 		}
 		ProductDTO dto = new ProductDTO();
 		dto.setId(product.getId());
@@ -119,7 +119,7 @@ public class Converter {
 	// ProductDTO -> Product
 	public static Product convertToProduct(ProductDTO productDTO) {
 		if(productDTO==null) {
-			return null;
+			throw new ConvertException("ProductDTO 物件為 null ,無法轉換為 Product");
 		}
 		Product product = new Product();
 		product.setId(productDTO.getId());

@@ -37,125 +37,142 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @CrossOrigin
-@RequestMapping("/employeeAPI")
+@RequestMapping("/employee")
 public class EmployeeController {
 	@Autowired
-	EmployeeService employeeService;
+	private EmployeeService employeeService;
 
 	// 註冊新員工(新增)
+	// 檢查用戶名是否存在
+	// EmployeeDTO 傳送資訊，調用Service的 addEmployee() 註冊員工
 	@PostMapping("/addEmployee")
-	public ResponseEntity<Map<String, String>> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
+	public ResponseEntity<?> addEmployee(@RequestBody EmployeeDTO employeeDTO) {
 		Map<String, String> response = new HashMap<>();
 		try {
-			if (!employeeService.checkUsernameBeenUsed(employeeDTO.getUsername())) {
-				employeeService.addEmployee(employeeDTO);
-				response.put("message", "add employee success");
-				response.put("name", employeeDTO.getName());
-				response.put("username", employeeDTO.getUsername());
-				response.put("position", employeeDTO.getPosition());
-				response.put("department", employeeDTO.getDepartment());
-				return new ResponseEntity<>(response, HttpStatus.CREATED);
-			} else {
+			boolean isUsernameUsed = employeeService.checkUsernameBeenUsed(employeeDTO.getUsername());
+			if (isUsernameUsed) {
 				response.put("message", "add employee failure. username repeat");
 				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 			}
+			employeeService.addEmployee(employeeDTO);
+			response.put("message", "add employee success");
+			response.put("name", employeeDTO.getName());
+			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (ServiceException e) {
-			response.put("message", "Employee addition failed: " + e.getMessage());
+			response.put("message", "addEmployee(): fail: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// 查詢所有員工(僅限chairman)
 	@GetMapping("/allEmployee")
-	public ResponseEntity<List<EmployeeDTO>> allEmployee(HttpSession session) {
+	public ResponseEntity<?> allEmployee(HttpSession session) {
+		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
 		if (currentEmployee == null) {
-			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look allEmployees Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
-			if ("chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-				List<EmployeeDTO> employees = employeeService.selectAllEmployee();
-				return new ResponseEntity<>(employees, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-			}
+			List<EmployeeDTO> employees = employeeService.selectAllEmployee();
+			return new ResponseEntity<>(employees, HttpStatus.OK);
+
 		} catch (ServiceException e) {
-			// Log the exception (optional, for debugging purposes)
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			response.put("message", "allEmployee(): fail: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// 員工可以查看自己的資料，或是職位是chairman可以查看任意員工的資料
 	@GetMapping("/findEmployee/id={id}")
-	public ResponseEntity<EmployeeDTO> selectEmployeeById(@PathVariable("id") Integer id, HttpSession session) {
+	public ResponseEntity<?> selectEmployeeById(@PathVariable("id") Integer id, HttpSession session) {
+		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
 		if (currentEmployee == null) {
-			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look allEmployees Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
-			if (currentEmployee.getId().equals(id) || "chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-				EmployeeDTO employee = employeeService.selectEmployeeById(id);
-				return new ResponseEntity<>(employee, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-			}
+			EmployeeDTO employee = employeeService.selectEmployeeById(id);
+			return new ResponseEntity<>(employee, HttpStatus.OK);
 		} catch (ServiceException e) {
-			// Log the exception (optional, for debugging purposes)
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			response.put("message", "findEmployeeId(): fail: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// chairman可以查看由 name 搜尋的員工資料
 	@GetMapping("findEmployee/name={name}")
-	public ResponseEntity<EmployeeDTO> selectEmployeeByName(@PathVariable("name") String name, HttpSession session) {
+	public ResponseEntity<?> selectEmployeeByName(@PathVariable("name") String name, HttpSession session) {
+		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
 		if (currentEmployee == null || !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
 		}
 
 		try {
 			EmployeeDTO employee = employeeService.selectEmployeeByName(name);
 			return new ResponseEntity<>(employee, HttpStatus.OK);
 		} catch (ServiceException e) {
-			// Log the exception (optional, for debugging purposes)
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			response.put("message", "findEmployeeName(): fail: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// chairman可以查看由 position 搜尋的員工資料
 	@GetMapping("/findEmployee/position={position}")
-	public ResponseEntity<List<EmployeeDTO>> selectEmployeeByPosition(@PathVariable("position") String position,
-			HttpSession session) {
+	public ResponseEntity<?> selectEmployeeByPosition(@PathVariable("position") String position, HttpSession session) {
+		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
-		if (currentEmployee == null || !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		if (currentEmployee == null) {
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
 			List<EmployeeDTO> employees = employeeService.selectEmployeeByPosition(position);
 			return new ResponseEntity<>(employees, HttpStatus.OK);
 		} catch (ServiceException e) {
-			// Log the exception (optional, for debugging purposes)
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+			response.put("message", "findEmployeePosition(): fail: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 	// chairman可以查看由 department 搜尋的員工資料
 	@GetMapping("/findEmployee/department={department}")
-	public ResponseEntity<List<EmployeeDTO>> selectEmployeeByDepartment(@PathVariable("department") String department,
+	public ResponseEntity<?> selectEmployeeByDepartment(@PathVariable("department") String department,
 			HttpSession session) {
+		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
-		if (currentEmployee == null || !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-			return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
+		if (currentEmployee == null) {
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
 			List<EmployeeDTO> employees = employeeService.selectEmployeeByDepartment(department);
 			return new ResponseEntity<>(employees, HttpStatus.OK);
 		} catch (ServiceException e) {
-			// Log the exception (optional, for debugging purposes)
+			response.put("message", "findEmployeeDepartment(): fail: " + e.getMessage());
 			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -163,49 +180,49 @@ public class EmployeeController {
 	// 員工只能修改自己的資料
 	// chairman可以修改任意員工的資料
 	@PutMapping("/updateEmployee/{id}")
-	public ResponseEntity<Map<String, String>> updateEmployee(@PathVariable("id") Integer id,
-			@RequestBody EmployeeDTO employeeDTO, HttpSession session) {
+	public ResponseEntity<?> updateEmployee(@PathVariable("id") Integer id, @RequestBody EmployeeDTO employeeDTO,
+			HttpSession session) {
 		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
 		if (currentEmployee == null) {
-			return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
-			if (currentEmployee.getId().equals(id) || "chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-				employeeService.updateEmployee(id, employeeDTO);
-				response.put("message", "Employee updated successfully.");
-				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-			}
+			employeeService.updateEmployee(id, employeeDTO);
+			response.put("message", "Employee updated successfully.");
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (ServiceException e) {
-			response.put("message", "Employee update failed: " + e.getMessage());
+			response.put("message", "updateEmployee(): fail: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	// 刪除員工資料(僅限於chairman)
 	@DeleteMapping("/deleteEmployee/{id}")
-	public ResponseEntity<Map<String, String>> deleteEmployee(@PathVariable("id") Integer id, HttpSession session) {
+	public ResponseEntity<?> deleteEmployee(@PathVariable("id") Integer id, HttpSession session) {
 		Map<String, String> response = new HashMap<>();
 		EmployeeDTO currentEmployee = (EmployeeDTO) session.getAttribute("Emp");
 		if (currentEmployee == null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			response.put("message", "please login first.");
+			return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+		}
+		if (!currentEmployee.getId().equals(id) && !"chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
+			response.put("message", "You don't have permission to look findEmployeePosition Info.");
+			return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
 		}
 
 		try {
-			if ("chairman".equalsIgnoreCase(currentEmployee.getPosition())) {
-				employeeService.deleteEmployeeById(id);
-				response.put("message", "Employee deleted successfully.");
-				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {
-				return new ResponseEntity<>(null, HttpStatus.FORBIDDEN);
-			}
-
+			employeeService.deleteEmployeeById(id);
+			response.put("message", "Employee deleted successfully.");
+			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (ServiceException e) {
-			response.put("message", "Employee deleted failed: " + e.getMessage());
+			response.put("message", "deleteEmployee(): fail: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

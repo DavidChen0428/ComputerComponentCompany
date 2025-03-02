@@ -1,6 +1,6 @@
 package com.project.david.dto;
 
-public class ConvertException extends Exception{
+public class ConvertException extends RuntimeException{
 
 	public ConvertException() {
 		super();
